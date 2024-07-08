@@ -16,6 +16,8 @@
         "random": "cpp",
         "latch": "cpp",
         "limits": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "iostream": "cpp",
+        "unordered_map": "cpp"
     }
 }
