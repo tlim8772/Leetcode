@@ -47,6 +47,10 @@ public:
         }
     }
     
+    // when this function is called, idx, is already in block
+    // i.e when notInBlock encounter "/*"
+    // idx is moved forward by 2
+    // this will prevent problems from "/*/"
     void inBlock(vector<string>& src, string& store, int ptr, int idx) {
         if (ptr == src.size()) return;
         else if (idx >= src[ptr].size()) {
@@ -62,6 +66,7 @@ public:
     vector<string> removeComments(vector<string>& source) {
         string store;
         if (isBlockStart(source[0], 0)) {
+            // to maintain invariant, thats why we start at 2
             inBlock(source, store, 0, 2);
         } else {
             notInBlock(source, store, 0, 0);
