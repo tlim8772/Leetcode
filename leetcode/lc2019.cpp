@@ -68,7 +68,7 @@ public:
     // note the structure of the string, e.g "6+0*1"
     // every even index is a digit, every odd index is a operator
     // dp, so [s, e] means index 2 * s, 2 * e in string
-    // we find all possible values by noticing the final operator splits the string into [s, m] and [m + 1, e]
+    // we find all possible values by noticing the final operation splits the string into [s, m] and [m + 1, e]
     // try all possible splits
     // since 0 <= ans <= 1000, and only have + and * so ans can only increase
     
