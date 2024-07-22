@@ -18,6 +18,11 @@
         "limits": "cpp",
         "semaphore": "cpp",
         "iostream": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_set": "cpp"
     }
 }
