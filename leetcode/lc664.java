@@ -1,3 +1,5 @@
+package leetcode;
+
 import java.util.*;
 
 // 1st we compress the string to remove consecutive same characters

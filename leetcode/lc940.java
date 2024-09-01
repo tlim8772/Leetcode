@@ -1,3 +1,5 @@
+package leetcode;
+
 import java.util.*;
 
 // basically if we have a5 b4 c3 b4 a2 c1

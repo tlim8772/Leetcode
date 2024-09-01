@@ -1,3 +1,5 @@
+package leetcode;
+
 import java.util.*;
 
 // greedy always take the pair with the largest left

@@ -1,3 +1,5 @@
+package leetcode;
+
 public class lc3165 {
     public int maximumSumSubsequence(int[] nums, int[][] queries) {
         long sum = 0;
