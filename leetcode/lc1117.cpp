@@ -23,7 +23,8 @@ public:
         
         // releaseHydrogen() outputs "H". Do not change or remove this line.
         // have to put this inside semH, if outside of semH, will have error
-        // suppose 2 sets go through the barrier, twice, then the order of which releaseH() and releaseO() is called
+        // suppose 2 sets go through the barrier, without having called releaseH/ releaseO
+        //, then the order of which releaseH() and releaseO() is called
         // is not known
         releaseHydrogen();
         semH.release();
