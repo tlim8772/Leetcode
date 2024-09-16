@@ -4,7 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
+// remember to compile with -std=c++20
 
 class H2O {
     barrier<function<void()>> b = barrier<function<void()>>(3, []() -> void {});
@@ -47,7 +47,7 @@ int main() {
     string str = "OHOHOOHHOHHOOHHHHOOHOOHHOHHOOHHHOOHOHHOHHOHHHHHOHHHHHHHHHHHH";
     vector<thread> arr;
     for (int i = 0; i < str.size(); i ++) {
-        if (str[i] == 'H') arr.push_back(thread([&]() -> void {h2o.hydrogen([&]() -> void {
+        if (str[i] == 'H') arr.push_back(thread([&] () -> void {h2o.hydrogen([&]() -> void {
             lock.acquire();
             cout << "H" << endl;
             lock.release();
