@@ -12,7 +12,11 @@ using namespace std;
 // even if let say, s1[index] gets its correct character at the 10th swap or something
 // so eg.g s1[index] = c, s1[j] = c', c' = s2[index]
 // whatever c' is, can do the swap in the 1st move. So in the 1st move, s[index] is c'', swap with c' in s[j']
-// hard to prove why this is optimal 
+// now in original optimal solution, 1st swap of index, it is c' that goes into the correct pos
+// 1st swap of c' in orignal solution, c' goes to correct slot
+// if 1st swap of c' (in pos index) is earlier that 1st swap of c'', c2 in s[j] is wrong, so let it take c'' place, then carry out same arguement
+// if 1st swap of c' (in pos index) is after 1st op with c'', no matter, as pos of c' does mot matter, so now s[j] (j in orignal swap)
+// takes over the op for c'', then carry out same arguement
 
 // if s1[j] == s2[j], don't swap (hard to prove)
 
