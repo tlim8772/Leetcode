@@ -14,8 +14,15 @@ using namespace std;
 // whatever c' is, can do the swap in the 1st move. So in the 1st move, s[index] is c'', swap with c' in s[j']
 // now in original optimal solution, 1st swap of index, it is c' that goes into the correct pos
 // 1st swap of c' in orignal solution, c' goes to correct slot
-// if 1st swap of c' (in pos index) is earlier that 1st swap of c'', c2 in s[j] is wrong, so let it take c'' place, then carry out same arguement
+// if 1st swap of c' (in pos index) is earlier that 1st swap of c'', c2 in s[j] is wrong, so let it take c'' place,
+// i.e c2 != s2[index], carry out same arguement
+
+// bottom line is, what new char, that originally goes to s[index], is wrong, so its pos does not matter, and it
+// can freely replace c'' until the swap where it goes to the correct place
+// but which means, another char goes to s[index], and process continues
+
 // if 1st swap of c' (in pos index) is after 1st op with c'', no matter, as pos of c' does mot matter, so now s[j] (j in orignal swap)
+// which orignally goes to s[index] and hence is wrong
 // takes over the op for c'', then carry out same arguement
 
 // if s1[j] == s2[j], don't swap (hard to prove)
