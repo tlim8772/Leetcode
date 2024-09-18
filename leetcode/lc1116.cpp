@@ -75,9 +75,9 @@ void f(int i) {
 int main() {
     ZeroEvenOdd zeo(7);
 
-    thread t0([&]() -> void {zeo.zero(f);});
-    thread t1([&]() -> void {zeo.odd(f);});
-    thread t2([&]() -> void {zeo.even(f);});
+    thread t0([&]() {zeo.zero(f);});
+    thread t1([&]() {zeo.odd(f);});
+    thread t2([&]() {zeo.even(f);});
 
     t0.join();
     t1.join();
