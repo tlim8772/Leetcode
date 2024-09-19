@@ -10,22 +10,24 @@ using namespace std;
 // the 1st index s.t s1[index] != s2[index] needs to be swapped out
 // and the index j to swap with it, can be any j > index, as long as s1[j] = s2[index]
 // even if let say, s1[index] gets its correct character at the 10th swap or something
-// so eg.g s1[index] = c, s1[j] = c', c' = s2[index]
+// so eg. s1[index] = c, s1[j] = c', c' = s2[index]
 // whatever c' is, can do the swap in the 1st move. So in the 1st move, s[index] is c'', swap with c' in s[j']
-// now in original optimal solution, 1st swap of index, it is c' that goes into the correct pos
-// 1st swap of c' in orignal solution, c' goes to correct slot
-// if 1st swap of c' (in pos index) is earlier that 1st swap of c'', c2 in s[j] is wrong, so let it take c'' place,
-// i.e c2 != s2[index], carry out same arguement
+// now whatever op c' is in, replace with c''
 
-// bottom line is, what new char, that originally goes to s[index], is wrong, so its pos does not matter, and it
-// can freely replace c'' until the swap where it goes to the correct place
-// but which means, another char goes to s[index], and process continues
+// suppose there are some ops using c'' befor 1st op with c', in original solution. In original solution, whatever
+// op c'' is in, the other party is wrong so is c'' that goes into correct position. So after swapping c' and c''
+// modified solution, it is simply c'' that is in a different pos, swap as per normal, just that other party goes to a different
+// pos, which is the original pos of c'. That party takes over c'
 
-// if 1st swap of c' (in pos index) is after 1st op with c'', no matter, as pos of c' does mot matter, so now s[j] (j in orignal swap)
-// which orignally goes to s[index] and hence is wrong
-// takes over the op for c'', then carry out same arguement
+// if it is op with c' that comes 1st, no problem, replace c' with c'', or whatver that has replaceed c'. 
 
-// if s1[j] == s2[j], don't swap (hard to prove)
+// bottom line is whatever party that replaces c', and goes to different pos, in original solution is supposed to go
+// to pos index, but now goes to the pos of c' in the original solution. So finally when c and c' switched in original position,
+// c somehow got to pos index, so now it has to be in the orignal solution of c', which means we have ended up in the same state.
+
+
+
+
 
 class Solution {
 public:
