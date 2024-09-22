@@ -36,7 +36,7 @@ public:
     }
 
     TreeNode* helper_deserialise(string& store, int s, int e) {
-        cout << store.substr(s, e - s + 1);
+        //cout << store.substr(s, e - s + 1);
         int val, left_len, right_len;
 
         int p1 = e;
@@ -59,8 +59,8 @@ public:
         left_len = stoi(store.substr(p2 + 1, p1 - p2));
 
         TreeNode* node = new TreeNode(val);
-        node->left = (left_len == 0) ? NULL : helper_deserialise(store, 0, left_len - 1);
-        node->right = (right_len == 0) ? NULL : helper_deserialise(store, left_len, left_len + right_len - 1);
+        node->left = (left_len == 0) ? NULL : helper_deserialise(store, s, s + left_len - 1);
+        node->right = (right_len == 0) ? NULL : helper_deserialise(store, s + left_len, s + left_len + right_len - 1);
 
         return node;
     }
