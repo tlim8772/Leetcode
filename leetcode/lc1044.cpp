@@ -15,6 +15,7 @@ vector<vector<vector<int>>> bins(30001, vector<vector<int>>());
 void clear() {
     for (vector<vector<int>>& bin : bins) bin.clear();
 }
+
 void radixSort(vector<vector<int>>& ranks) {
     clear();
 
@@ -50,6 +51,15 @@ void radixSort(vector<vector<int>>& ranks) {
             cnt --;
         }
     }
+}
+
+// when n = 10^5, just take the O(nlog^2n) algo, much faster
+void radixSort2(vector<vector<int>>& ranks) {
+    function<bool(vector<int>&, vector<int>&)> cmp = [] (vector<int>& a, vector<int>& b) {
+        return a[1] < b[1] || (a[1] == b[1] && a[2] < b[2]);
+    };
+
+    sort(ranks.begin(), ranks.end(), cmp);
 }
 
 void compress(vector<vector<int>>& sortedPairs) {
@@ -88,13 +98,13 @@ vector<int> suffixArray(string& s) {
     for (int i = 0; i < s.size(); i ++) {
         pairs.push_back({i, s[i], 0});
     }
-    radixSort(pairs);
+    radixSort2(pairs);
 
     int k = 1; // sort with 2^k char
     while (1) {
         compress(pairs);
         updateRanks(s.size(), k, pairs);
-        radixSort(pairs);
+        radixSort2(pairs);
         
         if ((1 << k) > s.size()) break; // must cover entire string, so break only when we exceed str.size() for the 1st time
         k ++;
