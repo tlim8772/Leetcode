@@ -175,7 +175,7 @@ public:
 };
 
 
-/*int main() {
+int main() {
     string s = "gatagaca";
     vector<int> out = suffixArray(s);
     for (int x : out) cout << x << " ";
@@ -185,13 +185,13 @@ public:
     for (int x : lca) cout << x << " ";
     cout << endl;
 
-}*/
+}
 
-int main() {
+/*int main() {
     string s = "xnahfslefuigqaaaaaaaaaaaaa";
     Solution sol;
     cout << sol.longestDupSubstring(s) << endl;
-}
+}*/
 
 
 
