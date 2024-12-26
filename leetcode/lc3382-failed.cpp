@@ -10,6 +10,7 @@ using ll = long long;
 // use persistant segment trees tofind out if there are points in the square bounded by (x1, x2) and (y1, y2)
 // use each x segment trees store the freq count of the y coor, and the range sum
 
+// failed due to MLE
 
 // if node is null, means that sum from [s,e] is 0
 struct Node {
