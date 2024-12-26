@@ -45,9 +45,7 @@ public:
     int minLength(string s, int numOps) {
         bool ans1 = ansIs1(s, numOps);
         if (ans1) return 1;
-        cout << "hello" << endl;
-        
-        int start = 1, end = s.size();
+        int start = 2, end = s.size();
         while (start < end) {
             int mid = (start + end) >> 1;
             if (binarySearch(s, numOps, mid)) end = mid;
