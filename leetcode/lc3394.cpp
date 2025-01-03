@@ -21,7 +21,7 @@ public:
         while (ptr != store.end()) {
             int end = ptr->second;
             if (end == n) break;
-            
+
             while (ptr != store.end() && ptr->first < end) {
                 m = max(m, ptr->second);
                 ptr ++;
@@ -42,8 +42,8 @@ public:
             ycoors.push_back({r[1], r[3]});
         });
 
-        bool xcan = checkCanCutIntervals(xcoors);
-        bool ycan = checkCanCutIntervals(ycoors);
+        bool xcan = checkCanCutIntervals(n, xcoors);
+        bool ycan = checkCanCutIntervals(n, ycoors);
         return xcan || ycan;
       
     }
