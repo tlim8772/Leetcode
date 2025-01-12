@@ -4,7 +4,7 @@ using namespace std;
 // trick is to work from the back
 // consider index i to be the last elem to be burst
 // then the 2 subarrays [l, i -1] and [i + 1, r] are independent
-// dp(l,r) is the best score we can get, without changing arr[l] and arr[r] at all
+// dp(l,r) is the best score we can get, without changing arr[l - 1] and arr[r + 1] at all
 
 class Solution {
 public:
