@@ -92,7 +92,8 @@ struct MaxTree {
         return tree[p];
     }
 
-    // gets the index >= idx s.t index is the smallest index s.t arr[index] > val
+    // gets the index >= idx s.t index is the smallest index s.t arr[index] > val, returns -1 if no elem found
+    // i.e all elems in [idx, len - 1] are <= val
     int query1stMore(int p, int s, int e, int accu, int idx, int val) {
         if (s == e) {
             return (getMax(p, s, e, accu).m > val) ? s : -1;
