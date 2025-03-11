@@ -18,6 +18,9 @@ using ll = long long;
 // or if p.x <= next p.x and p.y = next p.y can also skip
 // else for (idx = lim + 1; idx <= p[0]; idx ++) we minus p.y (the covering value), add in new covering val which is query(i)
 
+// amortise for query is nlogn, because lim only moves to the right
+// inserting, removing ranges in logn each for total of nlogn
+
 // then find the new num of valid subarrays
 
 struct Pair {
