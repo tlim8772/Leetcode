@@ -8,6 +8,16 @@ using ll = long long;
 // if robot shoot right, when recursing on the next robot, some of the walls to its left 
 // may have been cleared
 
+// basically when recursing on robot i
+// I only need to know how many robots on the left have been destroyed
+// so even though state is (index, offset)
+// total state is O(n)
+// because eg. W W  R W  W W R W W
+// each R's offset can only be the index of walls to the left/right that does not 
+// have to cross another robot
+// eg for the 2nd R, offset can only be 2,3,4,5
+// if offset is to the right, can only be the 1st wall to the right (i.e 1st robot destroyed all walls in that segment)
+
 class Solution {
 public:
     int NUM_WALLS;
@@ -60,8 +70,8 @@ public:
     } 
 
     // {robot pos, robot left lim, robot right lim}
-    vector<array<int,3>> getSortedRobotsWithLeftRight(const vector<pair<int,int>>& robotsWithDist) {
-        vector<array<int,3>> out;
+    vector<array<int,4>> getSortedRobotsWithLeftRight(const vector<pair<int,int>>& robotsWithDist, const vector<int>& walls) {
+        vector<array<int,4>> out;
         for (int i = 0; i < robotsWithDist.size(); i++) {
             int leftLim = (i == 0) ? -2e9 : robotsWithDist[i - 1].first + 1;
             int rightLim = (i == robotsWithDist.size() - 1) ? 2e9 : robotsWithDist[i + 1].first - 1;
@@ -70,7 +80,12 @@ public:
             int left = max(leftLim, pos - dist);
             int right = min(rightLim, pos + dist);
 
-            out.push_back({pos, left, right});
+            out.push_back({
+                ceiling(left, walls),
+                flooring(pos, walls),
+                ceiling(pos, walls),
+                flooring(right, walls)
+            });
         }
         return out;
     }
@@ -78,7 +93,7 @@ public:
     // remove walls directly on some robot as they will be removed regardless of whether the robot 
     // shoots left or right
     vector<int> getSortedWallsNotDirectlyOnRobot(const vector<int>& robots, const vector<int>& walls) {
-        set<int> robotSet(robots.begin(), robots.end());
+        unordered_set<int> robotSet(robots.begin(), robots.end());
         vector<int> out;
         for (int wall : walls) {
             if (robotSet.contains(wall)) continue;
@@ -104,7 +119,7 @@ public:
         return out;
     }
 
-    // offset is the index of the eftmost wall that has not been broken
+    // offset is the index of the leftmost wall that has not been broken
     // the position of this wall can be < pos of current robot
     // but also can be > pos of current robot
     // INVARIANT
@@ -148,9 +163,8 @@ public:
 
     int maxWalls(vector<int>& robots, vector<int>& distance, vector<int>& walls) {
         vector<pair<int,int>> robotsWithDist = getSortedRobotsWithDist(robots, distance);
-        vector<array<int,3>> robotsWithLeftRight = getSortedRobotsWithLeftRight(robotsWithDist);
         vector<int> wallsNotDirectlyOnRobot = getSortedWallsNotDirectlyOnRobot(robots, walls);
-        vector<array<int,4>> robotsWithLeftRightWall = getRobotWithLeftRightWall(robotsWithLeftRight, wallsNotDirectlyOnRobot);
+        vector<array<int,4>> robotsWithLeftRightWall = getSortedRobotsWithLeftRight(robotsWithDist, wallsNotDirectlyOnRobot);
         NUM_WALLS = wallsNotDirectlyOnRobot.size();
         
         /*for (int w : wallsNotDirectlyOnRobot) {
