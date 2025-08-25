@@ -1,0 +1,14 @@
+ vector<array<int,3>> getWallsWithLeftRightRobot(const vector<array<int,3>> sortedRobotsWithLeftRight, const vector<int>& walls) {
+        vector<array<int,3>> out;
+        int curr = 0; // curr gap which is [curr - 1, curr]
+        for (int wall : walls) {
+            while (curr < sortedRobotsWithLeftRight.size()) {
+                int left = (curr == 0) ? -2e9 : sortedRobotsWithLeftRight[curr - 1][0];
+                int right = (curr == sortedRobotsWithLeftRight.size()) ? 2e9 : sortedRobotsWithLeftRight[curr][0];
+                if (left < wall && wall < right) break;
+                curr++;
+            }
+            out.push_back({wall, curr - 1, curr});
+        }
+        return out;
+    }
