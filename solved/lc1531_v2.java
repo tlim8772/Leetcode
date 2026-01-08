@@ -1,8 +1,4 @@
 package leetcode;
-//import java.util.*;
-
-
-    
 
 public class lc1531_v2 {
     
