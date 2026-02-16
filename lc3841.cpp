@@ -201,10 +201,186 @@ void test_split() {
     assert(out == vector<string>({"query", "1", "3"}));
 }
 
+template <typename T, typename R> 
+struct Hld {
+    R reducer;
+    vector<int> depths, weights;
 
+    vector<int> node_to_segtree_id;
+    vector<int> segtree_next_nodes;
+    vector<int> segtree_root_nodes;
+    vector<SegTree<T, R>> segtrees;
 
+    Hld(int n, const vector<vector<int>>& adj, const vector<T>& vals): Hld(n, adj, vals, R()) {}
+
+    Hld(int n, const vector<vector<int>>& adj, const vector<T>& vals, R reducer): 
+        reducer(reducer),
+        depths(n, 0), 
+        weights(n, 0) ,
+        node_to_segtree_id(n, 0) 
+        {
+            dfs_depth(0, -1, adj);
+            dfs_weights(0, -1, adj);
+            
+            vector<int> nodes;
+            decompose(0, -1, -1, nodes, adj, vals);
+        }
+
+    void dfs_depth(int v, int p, const vector<vector<int>>& adj, int depth = 0) {
+        depths[v] = depth;
+        for (int c : adj[v]) {
+            if (c == p) continue;
+            dfs_depth(c, v, adj, depth + 1);
+        }
+    }
+
+    void dfs_weights(int v, int p, const vector<vector<int>>& adj) {
+        int sum = 1;
+        for (int c : adj[v]) {
+            if (c == p) continue;
+            dfs_weights(c, v, adj);
+            sum += weights[c];
+        }
+        weights[v] = sum;
+    }
+
+    void build_segtree(const vector<int>& nodes, int next_node, const vector<T>& vals) {
+        int segtree_id = segtrees.size();
+        for (int v : nodes) {
+            node_to_segtree_id[v] = segtree_id;
+        }
+        
+        segtree_next_nodes.push_back(next_node);
+
+        segtree_root_nodes.push_back(nodes[0]);
+        
+        vector<T> node_vals;
+        for (int v : nodes) node_vals.push_back(vals[v]);
+        
+        segtrees.emplace_back(node_vals, reducer);
+    }
+
+    void decompose(
+        int v, 
+        int p, 
+        int next_node, 
+        vector<int>& nodes, 
+        const vector<vector<int>>& adj, 
+        const vector<T>& vals) 
+    {
+        nodes.push_back(v);
+
+        // in out adj list system, a leaf node has adj list of length 1.
+        // all segments end at a leaf node.
+        // size can also be 0, when the tree is just 1 single node.
+        if (adj[v].size() <= 1) {
+            build_segtree(nodes, next_node, vals);
+            return;
+        }
+
+        int heaviest_node = -1, weight = 0;
+        for (int c : adj[v]) {
+            if (c == p) continue;
+            if (weights[c] > weight) {
+                heaviest_node = c, weight = weights[c];
+            }
+        }
+        
+        decompose(heaviest_node, v, next_node, nodes, adj, vals);
+
+        for (int c : adj[v]) {
+            if (c == p || c == heaviest_node) continue;
+            vector<int> new_nodes;
+            decompose(c, v, v, new_nodes, adj, vals);
+        }
+    }
+
+    void update_node(int node, T val) {
+        int segtree_id = node_to_segtree_id[node];
+        auto& st = segtrees[segtree_id];
+        int root_node = segtree_root_nodes[segtree_id];
+        int idx = depths[node] - depths[root_node];
+        st.point_update(idx, val);
+    }
+
+    // top and bottom must lie in the path from root to bottom.
+    // top and bottom can be equal.
+    T range_query(int top, int bottom) {
+        T accu = T();
+        while (1) {
+            int top_seg_id = node_to_segtree_id[top];
+            int top_root_node = segtree_root_nodes[top_seg_id];
+
+            int bottom_seg_id = node_to_segtree_id[bottom];
+            int bottom_root_node = segtree_root_nodes[bottom_seg_id];
+
+            if (top_seg_id == bottom_seg_id) {
+                auto& segtree = segtrees[top_seg_id];
+                int left_idx = depths[top] - depths[top_root_node];
+                int right_idx = depths[bottom] - depths[bottom_root_node];
+                T res = segtree.range_query(left_idx, right_idx);
+                accu = reducer(accu, res);
+                break;
+            } else {
+                auto& segtree = segtrees[bottom_seg_id];
+                int right_idx = depths[bottom] - depths[bottom_root_node];
+                T res = segtree.range_query(0, right_idx);
+                accu = reducer(accu, res);
+                bottom = segtree_next_nodes[bottom_seg_id];
+            }
+        }
+        return accu;
+    }
+};
+
+void test_hld() {
+    struct Sum {
+        int operator()(int x, int y) {
+            return x + y;
+        }
+    };
+
+    int n = 7;
+    vector<vector<int>> adj = {{1,2}, {0,3,4}, {0,5,6}, {1}, {1}, {2}, {2}};
+    vector<int> vals = {0,1,2,3,4,5,6};
+    Hld<int, Sum> hld(n, adj, vals);
+    assert(hld.range_query(0, 3) == 4);
+    assert(hld.range_query(2, 5) == 7);
+    hld.update_node(5, 10);
+    assert(hld.range_query(5, 5) == 10);
+    assert(hld.range_query(0, 5) == 12);
+
+    n = 8;
+    adj = {{1,6,7}, {0,2,5}, {1,3,4}, {2}, {2}, {1}, {0}, {7}};
+    vals = {0,1,2,3,4,5,6,7};
+    Hld<int, Sum> hld2(n, adj, vals);
+    assert(hld2.range_query(1, 5) == 6);
+    assert(hld2.range_query(1, 3) == 6);
+    hld2.update_node(2, 10);
+    assert(hld2.range_query(1, 3) == 14);
+}
+
+void test_hld_2() {
+    struct Xor {
+        bitset<3> operator()(bitset<3> b1, bitset<3> b2) {
+            return b1 ^ b2;
+        }
+    };
+    int n = 7;
+    vector<vector<int>> adj = {{1,2}, {0,3,4}, {0,5,6}, {1}, {1}, {2}, {2}};
+    vector<bitset<3>> vals;
+    for (int i = 0; i < n; i++) vals.emplace_back(i);
+    Hld<bitset<3>, Xor> hld(n, adj, vals);
+    assert(hld.range_query(0, 0) == bitset<3>());
+    assert(hld.range_query(0, 3) == bitset<3>(0 ^ 1 ^ 3));
+    hld.update_node(2, 7);
+    assert(hld.range_query(0, 6) == bitset<3>(0 ^ 7 ^ 6));
+}
+ 
 int main() {
     //test_lca();
     //test_seg_tree();
-    test_split();
+    //test_split();
+    //test_hld();
+    test_hld_2();
 }
