@@ -183,7 +183,28 @@ void test_seg_tree() {
     assert(st.range_query(0, 2) == 30);
 }
 
+vector<string> split(const string& s) {
+    vector<string> out;
+    for (auto token : ranges::views::split(s, ' ')) {
+        out.push_back(string(token.begin(), token.end()));
+    }
+    return out;
+}
+
+void test_split() {
+    string s = "update 2 a";
+    vector<string> out = split(s);
+    assert(out == vector<string>({"update", "2", "a"}));
+
+    s = "query 1 3";
+    out = split(s);
+    assert(out == vector<string>({"query", "1", "3"}));
+}
+
+
+
 int main() {
     //test_lca();
-    test_seg_tree();
+    //test_seg_tree();
+    test_split();
 }
