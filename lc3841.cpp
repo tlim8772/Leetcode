@@ -270,10 +270,9 @@ struct Hld {
     {
         nodes.push_back(v);
 
-        // in out adj list system, a leaf node has adj list of length 1.
-        // all segments end at a leaf node.
-        // size can also be 0, when the tree is just 1 single node.
-        if (adj[v].size() <= 1) {
+        int child_cnt = 0;
+        for (int c : adj[v]) child_cnt += (c != p);
+        if (child_cnt == 0) {
             build_segtree(nodes, next_node, vals);
             return;
         }
@@ -376,11 +375,90 @@ void test_hld_2() {
     hld.update_node(2, 7);
     assert(hld.range_query(0, 6) == bitset<3>(0 ^ 7 ^ 6));
 }
+
+class Solution {
+public:
+    vector<bool> palindromePath(int n, vector<vector<int>>& edges, string s, vector<string>& queries) {
+        vector<vector<int>> adj(n, vector<int>());
+        vector<bitset<26>> vals;
+
+        for (auto& e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+
+        for (char c : s) {
+            bitset<26> val;
+            val[c - 'a'] = 1;
+            vals.push_back(val);
+        }
+
+        struct Xor {
+            bitset<26> operator()(const bitset<26>& b1,const bitset<26>& b2) const {
+                return b1 ^ b2;
+            }
+        };
+
+        Hld<bitset<26>, Xor> hld(n, adj, vals);
+
+        vector<vector<int>> node_pairs;
+        int node_pair_lcas_idx = 0;
+        vector<int> node_pair_lcas;
+
+        for (string q : queries) {
+            vector<string> splitted = split(q);
+            if (splitted[0] == "query") {
+                int u = stoi(splitted[1]), v = stoi(splitted[2]);
+                node_pairs.push_back({u, v});
+            }
+        }
+        node_pair_lcas = TarjanLca::get_lca(n, adj, node_pairs);
+
+        vector<bool> out;
+        for (string q : queries) {
+            vector<string> splitted = split(q);
+            if (splitted[0] == "update") {
+                int u = stoi(splitted[1]);
+                char c = splitted[2][0];
+                bitset<26> val;
+                val[c - 'a'] = 1;
+                hld.update_node(u, val);
+            } else {
+                int lca = node_pair_lcas[node_pair_lcas_idx++];
+                int u = stoi(splitted[1]);
+                int v = stoi(splitted[2]);
+
+                bitset<26> lca_val = hld.range_query(lca, lca);
+                
+                bitset<26> left = hld.range_query(lca, u);
+                
+                bitset<26> right = hld.range_query(lca, v);
+                
+                bitset<26> res = left ^ right ^ lca_val;
+                
+                bool ans = res.count() <= 1;
+                out.push_back(ans);
+            }
+        }
+
+        return out;
+    }
+};
  
 int main() {
     //test_lca();
     //test_seg_tree();
     //test_split();
     //test_hld();
-    test_hld_2();
+    //test_hld_2();
+
+    Solution sol;
+    int n = 3;
+    vector<vector<int>> edges = {{0,1}, {1,2}};
+    string s = "aac";
+    vector<string> queries = {"query 0 2", "update 1 b", "query 0 2"};
+    vector<bool> out = sol.palindromePath(n, edges, s, queries);
+
+    for (bool a : out) cout << a << " ";
+    cout << endl;
 }
