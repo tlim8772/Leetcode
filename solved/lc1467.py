@@ -12,6 +12,10 @@ import math
 # num of ways is comb(slots0, x) * comb(slots1) * dp(distinc0, distinct1, taken + x, i + 1)
 # we add up for each value of x.
 
+# for eg idx 0, it does not matter where we place the balls of color 0, eg at idx 1, 3, 5 or 0, 1, 2
+# but we need to account for the combinations.
+# once we place eg 3 balls, just update the number of slots left.
+
 
 class Solution:
     def __init__(self):
