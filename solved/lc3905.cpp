@@ -24,9 +24,8 @@ public:
         }
 
         int wave = 0;
+        unordered_set<pair<int,int>, Hash> new_coors;
         while (!q.empty()) {
-            unordered_set<pair<int,int>, Hash> new_coors;
-
             for (int len = q.size(); len > 0; len--) {
                 auto [x, y, c] = q.front(); q.pop_front();
                 
