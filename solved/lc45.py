@@ -47,6 +47,7 @@ class Solution:
         # init the monotonic queue.
         curr_idx = 0
         curr_cnt = 0
+        start = 1
         limit = arr[0]
 
         for i in range(1, limit + 1):
@@ -65,17 +66,18 @@ class Solution:
             new_limit = pair[1]
             curr_cnt += 1
 
-            for i in range(curr_idx + 1, limit + 1):
+            for i in range(start, limit + 1):
                 mono_q.pop(i)
 
             for i in range(limit + 1, new_limit + 1):
                 mono_q.push(i, arr[i])
 
             curr_idx = next_idx
+            start = limit + 1
             limit = new_limit
 
 sol = Solution()
-nums = [2,3,1,1,4]
+nums = [10] * 1000000
 ans = sol.jump(nums)
 print(ans)
 
